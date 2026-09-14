@@ -1,36 +1,20 @@
-```python
 import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 
 
-# Fungsi
 def function(x):
     return np.exp(-0.5 * x) - 0.1 * x - 0.5
 
 
-# Bisection Method
-def bisection(x_low, x_up, iter_lim, tol, verbose=True):
+def bisection(x_low, x_up, iter_lim, tol):
 
-    # Cek interval
-    assert x_low < x_up, \
-        "Error: x_low must be lower than x_up!"
-
+    assert x_low < x_up, "x_low must be lower than x_up!"
     assert function(x_low) * function(x_up) < 0, \
-        "Error: root is not between x_low and x_up!"
-
-    if verbose:
-        print("\nBISECTION METHOD")
-        print("-" * 40)
-        print("f(x) = exp(-0.5*x) - 0.1*x - 0.5")
-        print(f"x_low          = {x_low}")
-        print(f"x_up           = {x_up}")
-        print(f"max iteration  = {iter_lim}")
-        print(f"tolerance       = {tol}")
+        "Root is not between x_low and x_up!"
 
     iteration = 0
 
-    # Bisection
     while iteration < iter_lim:
 
         x_root = x_low + (x_up - x_low) / 2
@@ -38,83 +22,56 @@ def bisection(x_low, x_up, iter_lim, tol, verbose=True):
 
         iteration += 1
 
-        if verbose:
-            print(
-                f"\nIteration {iteration}: "
-                f"x_low = {x_low:.6f}, "
-                f"x_root = {x_root:.6f}, "
-                f"x_up = {x_up:.6f}, "
-                f"f(x) = {y_root:.6f}"
-            )
+        print(
+            f"Iteration {iteration}: "
+            f"x_low = {x_low:.6f}, "
+            f"x_root = {x_root:.6f}, "
+            f"x_up = {x_up:.6f}, "
+            f"f(x) = {y_root:.6f}"
+        )
 
-        # Stopping criterion
         if abs(y_root) <= tol:
             break
 
-        # Menentukan interval berikutnya
         if function(x_low) * y_root < 0:
             x_up = x_root
         else:
             x_low = x_root
 
-    # Warning jika iterasi maksimum tercapai
     if iteration == iter_lim and abs(y_root) > tol:
         warnings.warn("Maximum iteration reached.")
 
     return x_root, y_root
 
 
-# =========================
-# INPUT
-# =========================
-
+# Input
 x_low = float(input("Lower x = "))
 x_up = float(input("Upper x = "))
 iter_lim = int(input("Maximum iteration = "))
 tol = float(input("Tolerance = "))
 
 
-# =========================
-# BISECTION
-# =========================
-
+# Bisection
 x_solution, y_solution = bisection(
-    x_low,
-    x_up,
-    iter_lim,
-    tol
+    x_low, x_up, iter_lim, tol
 )
 
 
-# =========================
-# HASIL
-# =========================
-
-print("\n" + "=" * 40)
-print("FINAL RESULT")
-print("=" * 40)
+# Result
+print("\nFINAL RESULT")
 print(f"x    = {x_solution:.10f}")
 print(f"f(x) = {y_solution:.10f}")
 
 
-# =========================
-# PLOT
-# =========================
-
+# Plot
 x = np.linspace(x_low, x_up, 500)
-y = function(x)
 
-plt.plot(x, y, linewidth=3)
-plt.axhline(0, color="k", linewidth=2)
-plt.axvline(
-    x_solution,
-    linestyle="--",
-    linewidth=2
-)
+plt.plot(x, function(x))
+plt.axhline(0)
+plt.axvline(x_solution, linestyle="--")
 
 plt.xlabel("x")
 plt.ylabel("f(x)")
 plt.title("Bisection Method")
-plt.grid(True)
+plt.grid()
 plt.show()
-```
